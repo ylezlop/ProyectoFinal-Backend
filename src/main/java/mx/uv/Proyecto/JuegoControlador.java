@@ -14,6 +14,7 @@ public class JuegoControlador {
 
     @PostMapping("/login")
     public Jugador login(@RequestBody Jugador datos) {
+        // Verificar si el jugador existe
         Jugador existente = iJugador.findByUsuario(datos.getUsuario());
         if (existente == null) {
             datos.setMaxPuntuacion(0);
@@ -26,12 +27,12 @@ public class JuegoControlador {
         }
     }
 
-    @GetMapping("/scoreboard")
+    @GetMapping("/scoreboard")// Obtener el top 5 de jugadores
     public List<Jugador> obtenerTop5() {
         return iJugador.findTop5ByOrderByMaxPuntuacionDesc();
     }
 
-    @PostMapping("/puntaje")
+    @PostMapping("/puntaje") // Actualizar el puntaje máximo de un jugador
     public Jugador actualizarPuntaje(@RequestBody Jugador datos) {
         Jugador jugador = iJugador.findByUsuario(datos.getUsuario());
         if (jugador != null && datos.getMaxPuntuacion() > jugador.getMaxPuntuacion()) {
@@ -41,11 +42,11 @@ public class JuegoControlador {
         return jugador;
     }
 
-    @DeleteMapping("/borrar")
+    @DeleteMapping("/borrar") // Borrar cuenta de jugador
     public boolean borrarCuenta(@RequestBody Map<String, String> credenciales) {
-        Jugador jugador = iJugador.findByUsuario(credenciales.get("usuario"));
-        if (jugador != null && jugador.getPassword().equals(credenciales.get("password"))) {
-            iJugador.delete(jugador);
+        Jugador jugador = iJugador.findByUsuario(credenciales.get("usuario")); 
+        if (jugador != null && jugador.getPassword().equals(credenciales.get("password"))) { // Verificar contraseña
+            iJugador.delete(jugador); // Lo borra
             return true;
         }
         return false;
